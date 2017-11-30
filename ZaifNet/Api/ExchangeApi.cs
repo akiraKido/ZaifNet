@@ -41,7 +41,7 @@ namespace ZaifNet.Api
             return currentTime - basetTime;
         }
 
-        public async Task<TradeResult> ExecuteTradeAsync(CurrencyPair currencyPair,
+        public async Task<TradesResult> ExecuteTradeAsync(CurrencyPair currencyPair,
             TradeType tradeType, double price, double ammount)
         {
             return await ExecuteTradeAsync(currencyPair, tradeType, price, ammount, null).ConfigureAwait(false);
@@ -58,7 +58,7 @@ namespace ZaifNet.Api
         /// <param name="limit"></param>
         /// <exception cref="System.Net.WebException">レスポンスがなかった際に発生します。</exception>
         /// <returns></returns>
-        public async Task<TradeResult> ExecuteTradeAsync(CurrencyPair currencyPair,
+        public async Task<TradesResult> ExecuteTradeAsync(CurrencyPair currencyPair,
             TradeType tradeType, double price, double ammount, double? limit)
         {
             var message = $"&currency_pair={currencyPair.Symbol}" +
@@ -67,7 +67,7 @@ namespace ZaifNet.Api
                           $"&amount={ammount}" +
                           (limit != null ? $"&i_limit={limit.Value}" : "");
             var json = await DoCommandAsync("trade", message).ConfigureAwait(false);
-            return new TradeResult(json);
+            return new TradesResult(json);
         }
 
         /// <param name="method"></param>

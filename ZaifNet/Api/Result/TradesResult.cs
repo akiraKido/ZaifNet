@@ -3,7 +3,7 @@ using ZaifNet.Types;
 
 namespace ZaifNet.Api.Result
 {
-    public class TradeResult
+    public class TradesResult
     {
         public DateTime Date { get; }
         public double Price { get; }
@@ -12,7 +12,7 @@ namespace ZaifNet.Api.Result
         public CurrencyPair CurrencyPair { get; }
         public TradeType TradeType { get; }
 
-        internal TradeResult(dynamic json)
+        internal TradesResult(dynamic json)
         {
             long date = json.date;
             Date = DateTimeOffset.FromUnixTimeSeconds(date).DateTime.ToLocalTime();

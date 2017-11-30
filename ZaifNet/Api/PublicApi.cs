@@ -38,16 +38,16 @@ namespace ZaifNet.Api
         /// <summary>
         /// trade API を実行して結果を得ます。
         /// </summary>
-        /// <returns>結果を格納した<see cref="TradeResult"/>の列挙</returns>
-        public async Task<IEnumerable<TradeResult>> QueryTradesAsync()
+        /// <returns>結果を格納した<see cref="TradesResult"/>の列挙</returns>
+        public async Task<IEnumerable<TradesResult>> QueryTradesAsync()
         {
             var url = new Uri($"{Endpoint}/trades/{_currencyPair.Symbol}");
             var jsonString = await _client.DownloadStringTaskAsync(url).ConfigureAwait(false);
 
-            IEnumerable<TradeResult> TradeResultGenerator()
+            IEnumerable<TradesResult> TradeResultGenerator()
             {
                 foreach (var item in JSON.DeserializeDynamic(jsonString)) 
-                    yield return new TradeResult(item);
+                    yield return new TradesResult(item);
             }
 
             return TradeResultGenerator();
