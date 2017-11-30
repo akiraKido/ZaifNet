@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using ZaifNet.Api;
+using ZaifNet.Types;
 
 namespace ZaifNetSample
 {
@@ -13,6 +14,16 @@ namespace ZaifNetSample
         {
             var config = Config.Load();
             Console.WriteLine($"{config.Key}, {config.Secret}");
+            
+            var apiKey = new ApiKey(config.Key, config.Secret);
+//            Console.WriteLine(apiKey.MakeSignedHex("hoge"));
+            using (var api = new ExchangeApi(apiKey))
+            {
+                var result = await api.ExecuteTradeAsync(CurrencyPair.BtcJpy, TradeType.Bid, 10000, 0.01);
+                Console.WriteLine(result);
+            }
+            
+//            var ex = new ExchangeApi(null);
 //            using (var publicApi = new PublicApi(CurrencyPair.BtcJpy))
 //            {
 //                Console.WriteLine(await publicApi.QueryLastPriceAsync());
