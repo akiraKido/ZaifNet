@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Jil;
 using ZaifNet.Api.Result;
+using ZaifNet.Types;
 
 namespace ZaifNet.Api
 {

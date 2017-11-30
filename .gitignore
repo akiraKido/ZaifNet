@@ -317,3 +317,5 @@ ASALocalRun/
 #RiderC#
 .idea/
 *.*.iml
+
+private.json
