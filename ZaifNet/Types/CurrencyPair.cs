@@ -16,8 +16,8 @@ namespace ZaifNet.Api
         
         private CurrencyPair(Currency left, Currency right)
         {
-            Symbol = $"{left.Symbol()}_{right.Symbol()}";
-            Id = (left.Id() << 8) | right.Id();
+            Symbol = $"{left.Symbol}_{right.Symbol}";
+            Id = (left.Id << 8) | right.Id;
         }
 
         public static CurrencyPair Parse(string s)

@@ -2,40 +2,21 @@
 
 namespace ZaifNet.Types
 {
-    public enum Currency
+    public class Currency
     {
-        Btc,
-        Jpy,
-        Mona,
-        Xem
-    }
+        public static readonly Currency Jpy = new Currency("jpy", 1);
+        public static readonly Currency Btc = new Currency("btc", 2);
+        public static readonly Currency Mona = new Currency("mona", 3);
+        public static readonly Currency Xem = new Currency("xem", 4);
 
-    public static class CurrencyExtensions
-    {
-        public static string Symbol(this Currency currency)
+        public string Symbol { get; }
+        public int Id { get; }
+        
+        private Currency(string symbol, int id)
         {
-            switch (currency)
-            {
-                case Currency.Btc: return "btc";
-                case Currency.Jpy: return "jpy";
-                case Currency.Mona: return "mona";
-                case Currency.Xem: return "xem";
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(currency), currency, null);
-            }
-        }
-
-        public static int Id(this Currency currency)
-        {
-            switch (currency)
-            {
-                case Currency.Jpy: return 1;
-                case Currency.Btc: return 2;
-                case Currency.Mona: return 3;
-                case Currency.Xem: return 4;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(currency), currency, null);
-            }
+            Symbol = symbol;
+            Id = id;
         }
     }
+
 }
