@@ -29,6 +29,14 @@ private static async Task Main()
 }
 ```
 
+# ZaifNetSample.csproj を開く際の注意
+
+シークレットキーなどを保持するため `private.json` というファイルを設置しています。
+
+Clone するとエラーが出る可能性があるので、`ZaifNetSmaple` プロジェクト配下に `private.json`
+
+を作成して、`Key` と `Secret` をキーにした json を作成してください。
+
 # ライセンス
 
 JZaif に見習い、2 条項 BSD とします。
