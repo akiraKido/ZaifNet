@@ -16,7 +16,6 @@ namespace ZaifNetSample
             Console.WriteLine($"{config.Key}, {config.Secret}");
             
             var apiKey = new ApiKey(config.Key, config.Secret);
-//            Console.WriteLine(apiKey.MakeSignedHex("hoge"));
             using (var api = new ExchangeApi(apiKey))
             {
                 var result = await api.ExecuteTradeAsync(CurrencyPair.BtcJpy, TradeType.Bid, 10000, 0.01);
