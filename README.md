@@ -35,7 +35,9 @@ private static async Task Main()
 
 Clone するとエラーが出る可能性があるので、`ZaifNetSmaple` プロジェクト配下に `private.json`
 
-を作成して、`Key` と `Secret` をキーにした json を作成してください。
+を作成して、`Key` と `Secret` をキーにした json を作成して、ビルドの際ビルドフォルダにコピーされるよう
+
+設定してください。
 
 # ライセンス
 
