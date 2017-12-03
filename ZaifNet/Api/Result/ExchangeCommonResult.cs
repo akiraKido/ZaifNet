@@ -1,4 +1,5 @@
 ﻿using System;
+using static System.Environment;
 
 namespace ZaifNet.Api.Result
 {
@@ -46,6 +47,14 @@ namespace ZaifNet.Api.Result
             Btc = json.btc;
             Mona = json.mona;
             Xem = json.ContainsKey("xem") ? json.xem : 0;
+        }
+
+        public override string ToString()
+        {
+            return $"Jpy: {Jpy}{NewLine}" +
+                   $"Btc: {Btc}{NewLine}" +
+                   $"Mona: {Mona}{NewLine}" +
+                   $"Xem: {Xem}{NewLine}";
         }
     }
 

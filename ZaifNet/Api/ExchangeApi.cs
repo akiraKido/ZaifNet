@@ -41,7 +41,26 @@ namespace ZaifNet.Api
             return currentTime - basetTime;
         }
 
-        public async Task<TradeResult> ExecuteTradeAsync(CurrencyPair currencyPair,
+        // =============================================================================================================
+        // API
+        // =============================================================================================================
+
+        public async Task<ExchangeResult<CancelResult>> ExecuteCancelAsync(long orderId, CurrencyPair currencyPair = null, bool isToken = false)
+        {
+            var message = $"&order_id={orderId}" +
+                          (currencyPair != null ? $"&currency_pair = {currencyPair}" : "") +
+                          $"&is_token={isToken.ToString().ToLower()}";
+            var json = await DoCommandAsync("cancel_order", message).ConfigureAwait(false);
+            return new ExchangeResult<CancelResult>(json);
+        }
+        
+        public async Task<ExchangeResult<GetInfo2Result>> QueryGetInfo2Async()
+        {
+            var json = await DoCommandAsync("get_info2", string.Empty).ConfigureAwait(false);
+            return new ExchangeResult<GetInfo2Result>(json);
+        }
+
+        public async Task<ExchangeResult<TradeResult>> ExecuteTradeAsync(CurrencyPair currencyPair,
             TradeType tradeType, double price, double ammount)
         {
             return await ExecuteTradeAsync(currencyPair, tradeType, price, ammount, null).ConfigureAwait(false);
@@ -58,16 +77,16 @@ namespace ZaifNet.Api
         /// <param name="limit"></param>
         /// <exception cref="System.Net.WebException">レスポンスがなかった際に発生します。</exception>
         /// <returns></returns>
-        public async Task<TradeResult> ExecuteTradeAsync(CurrencyPair currencyPair,
+        public async Task<ExchangeResult<TradeResult>> ExecuteTradeAsync(CurrencyPair currencyPair,
             TradeType tradeType, double price, double ammount, double? limit)
         {
             var message = $"&currency_pair={currencyPair.Symbol}" +
                           $"&action={tradeType.Symbol}" +
                           $"&price={price}" +
-                          $"&amount={ammount}" +
+                          $"&amount={ammount:F4}" +
                           (limit != null ? $"&i_limit={limit.Value}" : "");
             var json = await DoCommandAsync("trade", message).ConfigureAwait(false);
-            return TradeResult.Create(json);
+            return new ExchangeResult<TradeResult>(json);
         }
 
         /// <param name="method"></param>
