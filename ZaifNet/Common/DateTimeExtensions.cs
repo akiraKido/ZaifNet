@@ -11,7 +11,8 @@ namespace ZaifNet.Common
         
         internal static long ToUnixTimeSeconds(this DateTime dateTime)
         {
-            var utcDateTime = TimeZoneInfo.ConvertTimeToUtc(dateTime);
+            var utcDateTime = TimeZoneInfo.ConvertTime(dateTime, TimeZoneInfo.Utc);
+//            var utcDateTime = TimeZoneInfo.ConvertTimeToUtc(dateTime);
             var dateTimeOffset = new DateTimeOffset(utcDateTime.Ticks, new TimeSpan());
             return dateTimeOffset.ToUnixTimeSeconds();
         }

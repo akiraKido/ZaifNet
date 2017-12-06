@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Jil;
 using ZaifNet.Api.Result;
@@ -17,11 +18,20 @@ namespace ZaifNet.Api
         private static readonly string Endpoint = "https://api.zaif.jp/api/1";
 
         private readonly CurrencyPair _currencyPair;
-        private readonly WebClient _client = new WebClient();
+        private readonly HttpClient _client = new HttpClient();
 
         /// <summary>コンストラクタ</summary>
         /// <param name="currencyPair">通貨ペアを指定します。</param>
-        public PublicApi(CurrencyPair currencyPair) => _currencyPair = currencyPair;
+        public PublicApi(CurrencyPair currencyPair, TimeSpan? timeout = null)
+        {
+            if(currencyPair == null) throw new ArgumentNullException(nameof(currencyPair));
+            
+            _currencyPair = currencyPair;
+            if (timeout.HasValue)
+            {
+                _client.Timeout = timeout.Value;
+            }
+        }
 
         /// <summary>
         /// depth API を実行して結果を得ます。
@@ -42,7 +52,8 @@ namespace ZaifNet.Api
         public async Task<IEnumerable<TradesResult>> QueryTradesAsync()
         {
             var url = new Uri($"{Endpoint}/trades/{_currencyPair.Symbol}");
-            var jsonString = await _client.DownloadStringTaskAsync(url).ConfigureAwait(false);
+//            var jsonString = await _client.DownloadStringTaskAsync(url).ConfigureAwait(false);
+            var jsonString = await _client.GetStringAsync(url).ConfigureAwait(false);
 
             IEnumerable<TradesResult> TradeResultGenerator()
             {
@@ -60,14 +71,37 @@ namespace ZaifNet.Api
         public async Task<double> QueryLastPriceAsync()
         {
             var url = new Uri($"{Endpoint}/last_price/{_currencyPair.Symbol}");
-            var jsonString = await _client.DownloadStringTaskAsync(url).ConfigureAwait(false);
+            string jsonString = null;
+            while (string.IsNullOrWhiteSpace(jsonString))
+            {
+                try
+                {
+                    jsonString = await _client.GetStringAsync(url).ConfigureAwait(false); 
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("retry");
+                }
+            }
             return JSON.DeserializeDynamic(jsonString).last_price;
         }
 
         private async Task<dynamic> DownloadDynamicJsonAsync(string target)
         {
             var url = new Uri($"{Endpoint}/{target}/{_currencyPair.Symbol}");
-            var jsonString = await _client.DownloadStringTaskAsync(url).ConfigureAwait(false);
+            string jsonString;
+            while (true)
+            {
+                try
+                {
+                    jsonString = await _client.GetStringAsync(url).ConfigureAwait(false);
+                    break;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("retry");
+                }
+            }
             return JSON.DeserializeDynamic(jsonString);
         }
 

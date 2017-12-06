@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Jil;
@@ -13,7 +14,7 @@ namespace ZaifNet.Api
     {
         private static readonly string EndPoint = "https://api.zaif.jp/tapi";
 
-        private readonly WebClient _client = new WebClient();
+        private readonly HttpClient _client = new HttpClient();
 
         private readonly ApiKey _apiKey;
         private long _nonce;
@@ -101,11 +102,15 @@ namespace ZaifNet.Api
             {
                 query += additionalParams;
             }
+            var content = new StringContent(query);
 
-            _client.Headers["Key"] = _apiKey.Key;
-            _client.Headers["Sign"] = _apiKey.MakeSignedHex(query);
-            var postResult = await _client.UploadStringTaskAsync($"{EndPoint}", query);
-            return JSON.DeserializeDynamic(postResult);
+            _client.DefaultRequestHeaders.Add("Key", _apiKey.Key);
+            _client.DefaultRequestHeaders.Add("Sign", _apiKey.MakeSignedHex(query));
+            var postResult = await _client.PostAsync($"{EndPoint}", content);
+//            _client.Headers["Key"] = _apiKey.Key;
+//            _client.Headers["Sign"] = _apiKey.MakeSignedHex(query);
+//            var postResult = await _client.UploadStringTaskAsync($"{EndPoint}", query);
+            return JSON.DeserializeDynamic(await postResult.Content.ReadAsStringAsync());
         }
 
         public void Dispose()
